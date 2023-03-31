@@ -102,6 +102,4 @@ typings/
 
 # TernJS port file
 .tern-port
-
-# 数据库文件
-db/*.db
+*.db
