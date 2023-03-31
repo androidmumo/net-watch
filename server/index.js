@@ -132,9 +132,9 @@ const calcFn = () => {
             valueArr.forEach(valueItem => {
                 sum += +valueItem;
             })
-            const min = valueArr[0];
-            const max = valueArr[valueArr.length - 1];
-            const avg = Math.round((sum / valueArr.length) * 1000) / 1000;
+            const min = valueArr[0] || 0;
+            const max = valueArr[valueArr.length - 1] || 0;
+            const avg = Math.round((sum / valueArr.length) * 1000) / 1000 || 0;
             const loss = Math.round((res.row.map(i => i.VALUE).filter(a => a === 'unalive').length / res.row.length) * 1000) / 1000;
             // console.log(min, max, avg, loss);
             db.serialize(() => {
