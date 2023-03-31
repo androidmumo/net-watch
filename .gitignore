@@ -104,4 +104,4 @@ typings/
 .tern-port
 
 # 数据库文件
-server/db/*.db
+db/*.db
