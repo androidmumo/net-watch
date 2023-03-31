@@ -14,4 +14,11 @@ const getHotData = () => {
 	}).then((response) => response.data)
 }
 
-export { getTargets, getHotData }
+const getLongData = () => {
+	return http({
+		method: 'get',
+		url: '/api/getLongData',
+	}).then((response) => response.data)
+}
+
+export { getTargets, getHotData, getLongData }

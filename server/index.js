@@ -21,6 +21,34 @@ const express = require("express");
 const { readFile } = require("fs");
 const app = new express();
 
+// ------ utils start------
+// 获取单个表的数据
+const getData = (key) => {
+    return new Promise((resolve, reject) => {
+        const sqlStr = `SELECT * FROM ${key};`;
+        db.serialize(() => {
+            db.all(sqlStr, (err, row) => {
+                if (err) reject({ key, err });
+                resolve({ key, row });
+            });
+        })
+    })
+};
+
+// 删除表
+const deleteTable = () => {
+    targets.forEach(target => {
+        db.serialize(() => {
+            const { key } = target;
+            const sqlStr1 = `DROP TABLE ${key}`;
+            db.run(sqlStr1);
+            const sqlStr2 = `DROP TABLE ${key}_hot`;
+            db.run(sqlStr2);
+        });
+    });
+};
+// ------ utils end------
+
 // ------ 逻辑代码 start------
 // 初始化SQLite
 let db = null;
@@ -67,18 +95,13 @@ const createTable = (key) => {
                 MIN TEXT NOT NULL,
                 MAX TEXT NOT NULL,
                 AVG TEXT NOT NULL,
-                NUMERIC_HOST TEXT NOT NULL,
+                LOSS TEXT NOT NULL,
                 TIMESTAMP DATETIME DEFAULT(STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW', 'LOCALTIME'))
             );
         `;
         db.run(sqlStrHot);
         db.run(sqlStr);
     });
-}
-for (let index = 0; index < targets.length; index++) {
-    const target = targets[index];
-    const { key } = target;
-    createTable(key);
 }
 
 // 执行ping
@@ -99,47 +122,60 @@ const pingFn = async (target) => {
 }
 
 // 计算
-const calcFn = () => { }
-
-// 遍历任务
-const go = () => {
-    console.log('任务开始');
-    setInterval(() => {
-        // console.log('执行ping');
-        targets.forEach(target => {
-            pingFn(target)
-        })
-    }, 1000);
-}
-
-setTimeout(go, 5000);
-
-// pingFn(targets[0])
-
-// 获取单个表的热数据(5分钟)
-const getHotData = (key) => {
-    return new Promise((resolve, reject) => {
-        const sqlStr = `SELECT * FROM ${key};`;
-        db.serialize(() => {
-            db.all(sqlStr, (err, row) => {
-                if (err) reject({ key, err });
-                resolve({ key, row });
+const calcFn = () => {
+    targets.forEach(target => {
+        const { name, key, host } = target;
+        getData(`${key}_hot`).then(res => {
+            let valueArr = res.row.map(i => i.VALUE).filter(o => o !== 'unalive');
+            valueArr.sort((a, b) => a - b);
+            let sum = 0;
+            valueArr.forEach(valueItem => {
+                sum += +valueItem;
+            })
+            const min = valueArr[0];
+            const max = valueArr[valueArr.length - 1];
+            const avg = Math.round((sum / valueArr.length) * 1000) / 1000;
+            const loss = Math.round((res.row.map(i => i.VALUE).filter(a => a === 'unalive').length / res.row.length) * 1000) / 1000;
+            console.log(min, max, avg, loss);
+            db.serialize(() => {
+                // 插入数据
+                const insertInfo = db.prepare(`insert into ${key} (NAME, HOST, MIN, MAX, AVG, LOSS) values (?, ?, ?, ?, ?, ?)`);
+                insertInfo.run(name, host, min, max, avg, loss);
+                insertInfo.finalize();
+                // 删除过期数据
+                const oldDatetime = dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss.SSS');
+                const sqlDel = `DELETE FROM ${key} WHERE TIMESTAMP <'${oldDatetime}';`;
+                db.run(sqlDel);
             });
-        })
+        });
     })
 };
 
-// 删除表
-const deleteTable = () => {
-    targets.forEach(target => {
-        db.serialize(() => {
-            const { key } = target;
-            const sqlStr = `DROP TABLE ${key}`;
-            db.run(sqlStr);
+// 开始任务
+const go = () => {
+    console.log('任务开始');
+    // 检查并创建表
+    for (let index = 0; index < targets.length; index++) {
+        const target = targets[index];
+        const { key } = target;
+        createTable(key);
+    }
+
+    setInterval(() => {
+        // console.log('执行ping');
+        targets.forEach(target => {
+            pingFn(target);
         });
-    });
-};
+    }, 1000);
+
+    setInterval(() => {
+        calcFn();
+    }, 1000 * 60 * 5);
+}
+
+setTimeout(go, 5000);
 // deleteTable();
+
 // ------ 逻辑代码 end------
 
 // ------ 接口 start------
@@ -164,7 +200,7 @@ app.get(`/api/getHotData`, (req, res) => {
     const jobArr = [];
     targets.forEach(target => {
         const { key } = target;
-        jobArr.push(getHotData(`${key}_hot`));
+        jobArr.push(getData(`${key}_hot`));
     });
     Promise.all(jobArr).then(resArr => {
         const data = {};
@@ -181,7 +217,34 @@ app.get(`/api/getHotData`, (req, res) => {
     }).catch(err => {
         res.send(err);
     })
-}); // 获取图片列表
+});
+
+// 获取所有长数据
+app.get(`/api/getLongData`, (req, res) => {
+    const jobArr = [];
+    targets.forEach(target => {
+        const { key } = target;
+        jobArr.push(getData(`${key}`));
+    });
+    Promise.all(jobArr).then(resArr => {
+        const data = {};
+        resArr.forEach(item => {
+            data[item.key] = item.row.map(rowItem => {
+                return {
+                    id: rowItem.ID,
+                    min: rowItem.MIN,
+                    max: rowItem.MAX,
+                    avg: rowItem.AVG,
+                    loss: rowItem.LOSS,
+                    timestamp: rowItem.TIMESTAMP,
+                }
+            });
+        })
+        res.send(data);
+    }).catch(err => {
+        res.send(err);
+    })
+});
 // ------ 接口 end------
 
 // 开始监听
