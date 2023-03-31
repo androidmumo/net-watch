@@ -136,7 +136,7 @@ const calcFn = () => {
             const max = valueArr[valueArr.length - 1];
             const avg = Math.round((sum / valueArr.length) * 1000) / 1000;
             const loss = Math.round((res.row.map(i => i.VALUE).filter(a => a === 'unalive').length / res.row.length) * 1000) / 1000;
-            console.log(min, max, avg, loss);
+            // console.log(min, max, avg, loss);
             db.serialize(() => {
                 // 插入数据
                 const insertInfo = db.prepare(`insert into ${key} (NAME, HOST, MIN, MAX, AVG, LOSS) values (?, ?, ?, ?, ?, ?)`);
