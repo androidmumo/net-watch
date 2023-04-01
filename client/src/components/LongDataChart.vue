@@ -25,6 +25,7 @@ const option = computed(() => {
     tooltip: {
       trigger: 'axis',
     },
+    legend: {},
     grid: {
       top: 30,
       bottom: 20,
@@ -146,7 +147,12 @@ setInterval(() => {
 </script>
 
 <template>
-  <div ref="echart" class="echart" style="width:100%;height:100%;"></div>
+  <div ref="echart" class="echart"></div>
 </template>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.echart {
+  width: 100%;
+  height: 100%;
+}
+</style>
