@@ -1,7 +1,13 @@
+// 导入配置文件
+import { baseConfig } from '../../../server/config/config.js';
+
+// 初始化配置项
+const { host, port } = baseConfig;
+
 import axios from 'axios'
 
 const instance = axios.create({
-	baseURL: 'http://localhost:8000',
+	baseURL: `${host}:${port}`,
 	// timeout: 1000,
 	// headers: { 'X-Custom-Header': 'foobar' },
 })

@@ -2,6 +2,7 @@
 
 // 基础配置
 const baseConfig = {
+	host: 'http://localhost',
     port: 8000,
     targets: [
         {
@@ -25,3 +26,5 @@ const baseConfig = {
 module.exports = {
     baseConfig,
 };
+
+export { baseConfig };
