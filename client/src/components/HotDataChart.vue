@@ -26,7 +26,7 @@ const option = computed(() => {
     grid: {
       top: 30,
       bottom: 20,
-      left: 30,
+      left: 60,
       right: 0,
     },
     xAxis: {
