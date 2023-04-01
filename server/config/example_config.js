@@ -10,24 +10,14 @@ const baseConfig = {
             host: '192.168.1.1',
         },
         {
-            name: '网关',
-            key: 'wg',
-            host: '10.0.24.1',
-        },
-        {
-            name: '谷歌',
-            key: 'gg',
-            host: 'google.com',
+            name: '路由器',
+            key: 'lyq',
+            host: '192.168.2.1',
         },
         {
             name: '百度',
             key: 'bd',
             host: 'www.baidu.com',
-        },
-        {
-            name: '雅虎',
-            key: 'yh',
-            host: 'yahoo.com',
         },
     ]
 };
