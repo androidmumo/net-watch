@@ -80,7 +80,7 @@ typings/
 
 # Nuxt.js build / generate output
 .nuxt
-# dist
+dist
 
 # Gatsby files
 .cache/
@@ -107,4 +107,4 @@ typings/
 server/db/*.db
 
 # 配置文件
-server/config/config.js
+server/config/config.json

@@ -1,11 +1,3 @@
-// 导入配置文件
-const {
-    baseConfig,
-} = require("./config/config");
-
-// 初始化配置项
-const { port, targets } = baseConfig;
-
 // 原生模块
 const childProcess = require("child_process");
 const path = require('path');
@@ -18,8 +10,13 @@ const dayjs = require('dayjs');
 
 // 使用express框架
 const express = require("express");
-const { readFile } = require("fs");
+const { readFileSync } = require("fs");
 const app = new express();
+
+// 导入配置文件
+const configStr = readFileSync('./config/config.json');
+const baseConfig = JSON.parse(configStr);
+const { host, port, targets } = baseConfig;
 
 // ------ utils start------
 // 获取单个表的数据
@@ -249,5 +246,5 @@ app.get(`/api/getLongData`, (req, res) => {
 
 // 开始监听
 app.listen(port, () => {
-    console.log(`api listening at http://localhost:${port}`);
+    console.log(`api listening at\nlocal: http://localhost:${port}\n network: ${host}:${port}`);
 });
