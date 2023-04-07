@@ -16,7 +16,7 @@ const app = new express();
 // 导入配置文件
 const configStr = readFileSync('./config/config.json');
 const baseConfig = JSON.parse(configStr);
-const { host, port, targets } = baseConfig;
+const { host, port, targets, pingInterval, calcInterval } = baseConfig;
 
 // ------ utils start------
 // 获取单个表的数据
@@ -163,11 +163,11 @@ const go = () => {
         targets.forEach(target => {
             pingFn(target);
         });
-    }, 1000);
+    }, pingInterval);
 
     setInterval(() => {
         calcFn();
-    }, 1000 * 60 * 5);
+    }, calcInterval);
 }
 
 setTimeout(go, 5000);

@@ -3,6 +3,10 @@ import { reactive } from 'vue';
 import { getTargets, getHotData, getLongData } from '../api/index.js';
 import ChartGroup from '../components/ChartGroup.vue';
 
+// 导入配置文件
+import baseConfig from '../../../server/config/config.json';
+const { pingInterval, calcInterval } = baseConfig;
+
 const state = reactive({
 	targets: [],
 	hotData: {},
@@ -30,8 +34,8 @@ const getLongDataFn = () => {
 getTargetsFn();
 getHotDataFn();
 getLongDataFn();
-setInterval(getHotDataFn, 1000);
-setInterval(getLongDataFn, 1000 * 60 * 5);
+setInterval(getHotDataFn, pingInterval);
+setInterval(getLongDataFn, calcInterval);
 
 </script>
 

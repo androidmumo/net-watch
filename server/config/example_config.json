@@ -13,9 +13,11 @@
 			"host": "192.168.2.1"
 		},
 		{
-			"name": "百度",
-			"key": "bd",
-			"host": "www.baidu.com"
+			"name": "公网",
+			"key": "gw",
+			"host": "114.114.114.114"
 		}
-	]
+	],
+	"pingInterval": 3000,
+	"calcInterval": 300000
 }
