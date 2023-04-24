@@ -55,7 +55,7 @@ setInterval(getLongDataFn, 1000 * 60 * 5);
 
 <template>
   <div class="chart-group">
-    <div class="main">
+    <div class="main card-style">
       <div class="name">{{ target.name }}</div>
       <div class="status" :class="`status-${ loss > 0.1 ? 'bad' : 'good' }`">
         <div class="icon"></div>
@@ -66,10 +66,10 @@ setInterval(getLongDataFn, 1000 * 60 * 5);
         <div class="text">24H丢包率</div>
       </div>
     </div>
-    <div class="hot-data-chart">
+    <div class="hot-data-chart card-style">
       <HotDataChart :data="hotData" />
     </div>
-    <div class="long-data-chart">
+    <div class="long-data-chart card-style">
       <LongDataChart :data="longData" />
     </div>
   </div>
@@ -83,13 +83,11 @@ setInterval(getLongDataFn, 1000 * 60 * 5);
 
   .main {
     width: 120px;
-    min-height: 300px;
+    height: 200px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: #fff;
-    border-radius: 4px;
     overflow: hidden;
     font-size: 14px;
     padding: 20px 10px;
@@ -146,20 +144,28 @@ setInterval(getLongDataFn, 1000 * 60 * 5);
 
   .hot-data-chart {
     flex: 1;
-    height: 300px;
-    background-color: #fff;
-    border-radius: 4px;
+    height: 200px;
     padding: 20px 10px;
     margin: 0 10px;
   }
 
   .long-data-chart {
     flex: 1;
-    height: 300px;
-    background-color: #fff;
-    border-radius: 4px;
+    height: 200px;
     padding: 20px 10px;
     margin: 0 10px;
+  }
+
+  .card-style {
+    background-color: #fff;
+    border-radius: 18px;
+    box-shadow: 2px 4px 12px rgba(0,0,0,.08);
+    transition: all .3s cubic-bezier(0,0,.5,1);
+  }
+
+  .card-style:hover {
+    box-shadow: 2px 4px 16px rgba(0,0,0,.16);
+    transform: scale3d(1.01,1.01,1.01);
   }
 }
 </style>

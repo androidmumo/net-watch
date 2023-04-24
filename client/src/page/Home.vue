@@ -2,6 +2,7 @@
 import { reactive } from 'vue';
 import { getTargets, getHotData, getLongData } from '../api/index.js';
 import ChartGroup from '../components/ChartGroup.vue';
+import Header from '../components/Header.vue';
 
 // 导入配置文件
 import baseConfig from '../../../server/config/config.json';
@@ -40,6 +41,7 @@ setInterval(getLongDataFn, calcInterval);
 </script>
 
 <template>
+	<Header />
 	<div class="home">
 		<div class="lable-group">
 			<div class="lable">项目</div>
@@ -54,7 +56,8 @@ setInterval(getLongDataFn, calcInterval);
 
 <style lang="scss" scoped>
 .home {
-	background-color: #f5f5f5;
+	background-color: #fbfbfd;
+	margin-top: 60px;
 	.lable-group {
 		display: flex;
 		align-items: center;
