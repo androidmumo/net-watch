@@ -1,6 +1,5 @@
 <script setup>
-import { reactive, computed } from 'vue';
-import { getTargets, getHotData, getLongData } from '../api/index.js';
+import { computed } from 'vue';
 import HotDataChart from './HotDataChart.vue';
 import LongDataChart from './LongDataChart.vue';
 
@@ -10,12 +9,7 @@ const props = defineProps({
   longData: Array,
 })
 
-const state = reactive({
-  targets: [],
-  hotData: {},
-  longData: {},
-})
-
+// 丢包率
 const loss = computed(() => {
   if (!Array.isArray(props.longData)) return 0;
   let sum = 0;
@@ -27,39 +21,20 @@ const loss = computed(() => {
   return avgLoss;
 })
 
-const getTargetsFn = () => {
-  getTargets().then(res => {
-    state.targets = res;
-  })
-}
-
-const getHotDataFn = () => {
-  getHotData().then(res => {
-    state.hotData = res;
-  })
-}
-
-const getLongDataFn = () => {
-  getLongData().then(res => {
-    state.longData = res;
-  })
-}
-
-getTargetsFn();
-getHotDataFn();
-getLongDataFn();
-setInterval(getHotDataFn, 1000);
-setInterval(getLongDataFn, 1000 * 60 * 5);
+// 状态
+const status = computed(() => {
+  return loss.value > 0.1 ? 'bad' : 'good';
+})
 
 </script>
 
 <template>
-  <div class="chart-group">
+  <div class="chart-group" :class="`status-${status}`">
     <div class="main card-style">
-      <div class="name">{{ target.name }}</div>
-      <div class="status" :class="`status-${ loss > 0.1 ? 'bad' : 'good' }`">
+      <div class="name">{{ props.target.name }}</div>
+      <div class="status">
         <div class="icon"></div>
-        <div class="text">状态{{ loss > 0.1 ? '异常' : '良好' }}</div>
+        <div class="text">状态{{ status === 'bad' ? '异常' : '良好' }}</div>
       </div>
       <div class="loss">
         <div class="value">{{ loss }}%</div>
@@ -67,10 +42,10 @@ setInterval(getLongDataFn, 1000 * 60 * 5);
       </div>
     </div>
     <div class="hot-data-chart card-style">
-      <HotDataChart :data="hotData" />
+      <HotDataChart :data="props.hotData" />
     </div>
     <div class="long-data-chart card-style">
-      <LongDataChart :data="longData" />
+      <LongDataChart :data="props.longData" />
     </div>
   </div>
 </template>
@@ -91,7 +66,6 @@ setInterval(getLongDataFn, 1000 * 60 * 5);
     overflow: hidden;
     font-size: 14px;
     padding: 20px 10px;
-    margin: 0 10px;
     text-align: center;
     font-size: 14px;
     color: #666;
@@ -117,18 +91,6 @@ setInterval(getLongDataFn, 1000 * 60 * 5);
       margin-bottom: 12px;
     }
 
-    .status-bad {
-      .icon {
-        background-color: #e94444;
-      }
-    }
-
-    .status-good {
-      .icon {
-        background-color: #41cf34;
-      }
-    }
-
     .loss {
       .value {
         font-size: 20px;
@@ -137,6 +99,7 @@ setInterval(getLongDataFn, 1000 * 60 * 5);
       }
 
       .text {
+        font-size: 12px;
         margin-top: 6px;
       }
     }
@@ -146,26 +109,45 @@ setInterval(getLongDataFn, 1000 * 60 * 5);
     flex: 1;
     height: 200px;
     padding: 20px 10px;
-    margin: 0 10px;
+    margin: 0 20px;
   }
 
   .long-data-chart {
     flex: 1;
     height: 200px;
     padding: 20px 10px;
-    margin: 0 10px;
   }
 
   .card-style {
     background-color: #fff;
     border-radius: 18px;
-    box-shadow: 2px 4px 12px rgba(0,0,0,.08);
-    transition: all .3s cubic-bezier(0,0,.5,1);
+    box-shadow: 2px 4px 12px rgba(0, 0, 0, .08);
+    transition: all .3s cubic-bezier(0, 0, .5, 1);
   }
 
   .card-style:hover {
-    box-shadow: 2px 4px 16px rgba(0,0,0,.16);
-    transform: scale3d(1.01,1.01,1.01);
+    box-shadow: 2px 4px 16px rgba(0, 0, 0, .16);
+    transform: scale3d(1.01, 1.01, 1.01);
+  }
+}
+
+.status-bad {
+  .main {
+    .status {
+      .icon {
+        background-color: #e94444;
+      }
+    }
+  }
+}
+
+.status-good {
+  .main {
+    .status {
+      .icon {
+        background-color: #41cf34;
+      }
+    }
   }
 }
 </style>

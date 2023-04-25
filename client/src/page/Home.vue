@@ -44,7 +44,7 @@ setInterval(getLongDataFn, calcInterval);
 	<Header />
 	<div class="home">
 		<div class="lable-group">
-			<div class="lable">项目</div>
+			<div class="lable">目标</div>
 			<div class="lable-5">5分钟</div>
 			<div class="lable-24">24小时</div>
 		</div>
@@ -56,8 +56,7 @@ setInterval(getLongDataFn, calcInterval);
 
 <style lang="scss" scoped>
 .home {
-	background-color: #fbfbfd;
-	margin-top: 60px;
+	margin: 60px 30px 0;
 	.lable-group {
 		display: flex;
 		align-items: center;
@@ -68,7 +67,6 @@ setInterval(getLongDataFn, calcInterval);
 		.lable {
 			width: 120px;
 			padding: 0 10px;
-			margin: 0 10px;
 		}
 
 		.lable-5 {
