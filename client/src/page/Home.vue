@@ -5,7 +5,7 @@ import ChartGroup from '../components/ChartGroup.vue';
 import Header from '../components/Header.vue';
 
 // 导入配置文件
-import baseConfig from '../../../server/config/config.json';
+import baseConfig from '../../config/config.json';
 const { pingInterval, calcInterval } = baseConfig;
 
 const state = reactive({

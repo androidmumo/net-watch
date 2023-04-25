@@ -1,0 +1,6 @@
+{
+	"host": "http://localhost",
+	"port": 8000,
+	"pingInterval": 3000,
+	"calcInterval": 300000
+}
