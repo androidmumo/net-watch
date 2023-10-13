@@ -1,5 +1,5 @@
 {
-  "name": "net-watch-web",
+  "name": "net-watch-client",
   "private": true,
   "version": "0.0.0",
   "type": "module",
