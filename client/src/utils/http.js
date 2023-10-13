@@ -1,11 +1,11 @@
 import axios from 'axios'
 
 // 导入配置文件
-import baseConfig from '../../config/config.json';
-const { host, port } = baseConfig;
+// import baseConfig from '../../config/config.json';
+// const { host, port } = baseConfig;
 
 const instance = axios.create({
-	baseURL: `${host}:${port}`,
+	// baseURL: `${host}:${port}`,
 	// timeout: 1000,
 	// headers: { 'X-Custom-Header': 'foobar' },
 })
