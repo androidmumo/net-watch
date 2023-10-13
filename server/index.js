@@ -179,7 +179,7 @@ setTimeout(go, 5000);
 // 跨域
 app.use(cors());
 
-const distPath = path.resolve(__dirname, '../client/dist');
+const distPath = path.resolve(__dirname, './dist');
 app.use(express.static(distPath));
 
 app.get('/', (req, res) => {
