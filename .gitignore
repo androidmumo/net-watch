@@ -11,4 +11,3 @@ server/db/*.db
 
 # 配置文件
 server/config/config.json
-client/config/config.json
